@@ -1,0 +1,54 @@
+{%extends 'base.html'%}
+
+{% block mainblock %}
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <div class="container mt-5">
+
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <table class="table table-bordered d-flex justify-content-center">
+                        <tr class="table-dark ">
+                            <th>Name</th>
+                            <th>Mobile Number</th>
+                            <th>Whatsapp Number</th>
+                            <th>Email</th>
+                            <th>DOB</th>
+                            <th>Username</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+
+                        {% for f in forms %}
+                        <tr>
+                            <td>{{f.name}}</td>
+                            <td>{{f.mobile_number}}</td>
+                            <td>{{f.whatsapp_number}}</td>
+                            <td>{{f.email}}</td>
+                            <td>{{f.date_of_birth}}</td>
+                            <td>{{f.username}}</td>
+                            <td class="nav flex-column">
+                                <a href="{% url 'cust-detail' f.id%}"class="px-4"> View</a>
+
+                                <a href="{%url 'cust-remove' f.id %}" class="px-4 mt-2">Delete</a>
+
+                                <a href="{%url 'cust-edit' f.id %}" class="px-4 mt-2 mb-2"> Update</a>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+
+
+{% endblock %}
