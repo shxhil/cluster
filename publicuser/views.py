@@ -5,6 +5,7 @@ from .forms import RegistartionForm
 from publicuser.models import CustomerReg
 from django.shortcuts import render,redirect
 from .utils import generate_username
+from django.db import IntegrityError
 
 
 # Create your views here.
@@ -31,26 +32,36 @@ from .utils import generate_username
 
 
 class CustomerRegView(View):
-    def get (self,request,*args,**kwargs):
-        form=RegistartionForm()
-        return render (request,"user/registration.html",{"form":form})
-    def post(self,request,*args,**kwargs):
-        form=RegistartionForm(request.POST)
+    def get(self, request, *args, **kwargs):
+        form = RegistartionForm()
+        return render(request, "user/registration.html", {"form": form})
+    
+    def post(self, request, *args, **kwargs):
+        form = RegistartionForm(request.POST)
         if form.is_valid():
-            # print(form.cleaned_data)
-            uname=form.cleaned_data['name']
-            number=form.cleaned_data['mobile_number']
-            dob=form.cleaned_data["date_of_birth"]
-            y=str(dob.year)
-            print(uname,number,y)
-            # print(username)
-            form.instance.username=generate_username(uname,number,y)
-            form.save()
+            uname = form.cleaned_data['name']
+            number = form.cleaned_data['mobile_number']
+            dob = form.cleaned_data["date_of_birth"]
+            y = str(dob.year)
+            generated_username = generate_username(uname, number, y)
             
-            return render (request,"user/registration.html",{"form":form})
-        else:
-            print("failed")
-            return render (request,"user/registration.html",{"form":form})
+            try:
+        
+                customer = CustomerReg.objects.create(
+                    name=uname,
+                    mobile_number=number,
+                    date_of_birth=dob,
+                    username=generated_username
+                )
+                messages.success(request, "Registration successful")
+                return redirect('register')  
+            except IntegrityError:
+                # If a duplicate username is encountered, display an error message
+                messages.error(request, "Username already exists. Please try again.")
+                return render(request, "user/registration.html", {"form": form})
+        
+        # If form is not valid, render the form again
+        return render(request, "user/registration.html", {"form": form})
 
 
     

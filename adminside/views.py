@@ -15,7 +15,6 @@ from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 
 from tablib import Dataset
-from .resource import UploadResource
 
 # Create your views here.
 def permission_required(fn):
