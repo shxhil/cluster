@@ -46,6 +46,7 @@ class CustomerRegView(View):
             # print(username)
             form.instance.username=generate_username(uname,number,y)
             form.save()
+            
             return render (request,"user/registration.html",{"form":form})
         else:
             print("failed")
